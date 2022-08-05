@@ -52,6 +52,20 @@ def fetch_talkpython_episodes():
     _feed = feedparser.parse("https://talkpython.fm/episodes/rss")
     save_new_episodes(_feed)
 
+def fetch_twimlai_episodes():
+    """Fetches new episodes from RSS for the Talk Python to Me Podcast."""
+    _feed = feedparser.parse("http://feeds.feedburner.com/twimlai")
+    save_new_episodes(_feed)
+
+def fetch_mlg_episodes():
+    """Fetches new episodes from RSS for the Talk Python to Me Podcast."""
+    _feed = feedparser.parse("https://machinelearningguide.libsyn.com/rss")
+    save_new_episodes(_feed)
+
+def fetch_aii_episodes():
+    """Fetches new episodes from RSS for the Talk Python to Me Podcast."""
+    _feed = feedparser.parse("https://techemergence.libsyn.com/rss")
+    save_new_episodes(_feed)
 
 def delete_old_job_executions(max_age=604_800):
     """Deletes all apscheduler job execution logs older than `max_age`."""
@@ -86,6 +100,36 @@ class Command(BaseCommand):
         logger.info("Added job: Talk Python Feed.")
 
         scheduler.add_job(
+            fetch_twimlai_episodes,
+            trigger="interval",
+            minutes=2,
+            id="This Week In M.L & A.I Feed",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job: This Week in M.L & A.I Feed.")
+
+        scheduler.add_job(
+            fetch_aii_episodes,
+            trigger="interval",
+            minutes=2,
+            id="Artificial Intelligence in Industry Feed",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job: Artificial Intelligence in Industry Feed.")
+
+        scheduler.add_job(
+            fetch_mlg_episodes,
+            trigger="interval",
+            minutes=2,
+            id="Machine Learning Guide Feed",
+            max_instances=1,
+            replace_existing=True,
+        )
+        logger.info("Added job: Machine Learning Guide Feed.")
+
+        scheduler.add_job(
             delete_old_job_executions,
             trigger=CronTrigger(
                 day_of_week="mon", hour="00", minute="00"
@@ -95,6 +139,8 @@ class Command(BaseCommand):
             replace_existing=True,
         )
         logger.info("Added weekly job: Delete Old Job Executions.")
+
+
 
         try:
             logger.info("Starting scheduler...")
