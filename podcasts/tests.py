@@ -1,10 +1,13 @@
 from django.test import TestCase
+
+# Create your tests here.
 from django.utils import timezone
+
 from django.urls.base import reverse
+
 from datetime import datetime
+
 from .models import Episode
-
-
 
 class PodCastsTests(TestCase):
     def setUp(self):
@@ -29,6 +32,7 @@ class PodCastsTests(TestCase):
         self.assertEqual(
             str(self.episode), "My Python Podcast: My Awesome Podcast Episode"
         )
+
     def test_home_page_status_code(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)

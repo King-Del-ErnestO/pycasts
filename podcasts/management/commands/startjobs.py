@@ -57,6 +57,19 @@ def delete_old_job_executions(max_age=604_800):
     """Deletes all apscheduler job execution logs older than `max_age`."""
     DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
+def handle(self, *args, **options):
+    scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
+    scheduler.add_jobstore(DjangoJobStore(), "default")
+
+    scheduler.add_job(
+        fetch_realpython_episodes,
+        trigger="interval",
+        minutes=2,
+        id="The Real Python Podcast",
+        max_instances=1,
+        replace_existing=True,
+    )
+    logger.info("Added job: The Real Python Podcast.")
 
 
 class Command(BaseCommand):
